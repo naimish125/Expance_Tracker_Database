@@ -30,18 +30,17 @@ class dbHelper {
   }
 
   Future<void> insertData({
-    required  id,
+    // required  id,
     required Pname,
     required Pprice,
     required Ptype,
     required Pdate,
     required Ptime,
     required Status,
-  })
-  async {
+  }) async {
     database = await checkDB();
-    database!.insert('incomeexpense',{
-      'id'   : id,
+    database!.insert('incomeexpense', {
+      // 'id'   : id,
       'Pname': Pname,
       'Pprice': Pprice,
       'Ptype': Ptype,
@@ -51,13 +50,11 @@ class dbHelper {
     });
   }
 
-
   Future<List<Map>> ReadData() async {
     database = await checkDB();
     String sql = "SELECT * FROM incomeexpense";
     List<Map> list = await database!.rawQuery(sql);
     return list;
-
   }
 
   Future<void> deleteData({required id}) async {
@@ -65,35 +62,32 @@ class dbHelper {
     database!.delete("incomeexpense", where: "id=?", whereArgs: [id]);
   }
 
-
-  Future<void> updateData(
-      {
-        required id,
-          required Pname,
-        required Pprice,
-           required Ptype,
-           required Pdate,
-           required Ptime,
-           required Status,
-      }) async {
+  Future<void> updateData({
+    required id,
+    required Pname,
+    required Pprice,
+    required Ptype,
+    required Pdate,
+    required Ptime,
+    required Status,
+  }) async {
     database = await checkDB();
     database!.update(
         'incomeexpense',
         {
-                'id'   : id,
-                'Pname': Pname,
-                'Pprice': Pprice,
-                'Ptype': Ptype,
-                'Pdate': Pdate,
-                'Ptime': Ptime,
-                'Status': Status,
+          'id': id,
+          'Pname': Pname,
+          'Pprice': Pprice,
+          'Ptype': Ptype,
+          'Pdate': Pdate,
+          'Ptime': Ptime,
+          'Status': Status,
         },
         where: 'id=?',
         whereArgs: [id]);
   }
-  Future<List> FilterData({required Status})
-  async {
 
+  Future<List> FilterData({required Status}) async {
     database = await checkDB();
 
     String quary = "SELECT * FROM incomeexpense WHERE Status=$Status";
@@ -101,7 +95,6 @@ class dbHelper {
 
     List l1 = await database!.rawQuery(quary);
     print(l1);
-
 
     print(l1);
     return l1;
@@ -114,6 +107,7 @@ class dbHelper {
     List incomeDataTotal = await database!.rawQuery(query);
     return incomeDataTotal;
   }
+
   Future<List> calculateExpenseBalance() async {
     database = await checkDB();
     String query =
@@ -121,6 +115,46 @@ class dbHelper {
     List expenseDataTotal = await database!.rawQuery(query);
     return expenseDataTotal;
   }
+  Future<List<Map>> filterDate({
+    required startingDate,
+    required endingDate,
+  }) async {
+    database = await checkDB();
+    String query =
+        "SELECT * FROM incomeexpense WHERE Pdate >= '$startingDate' AND Pdate <= '$endingDate'";
+    List<Map> dataList = await database!.rawQuery(query);
+    return dataList;
+  }
 
+  Future<List<Map>> filterCategory({
+    required category,
+  }) async {
+    database = await checkDB();
+    String query = "SELECT * FROM incomeexpense WHERE Pname = '$category'";
+    List<Map> dataList = await database!.rawQuery(query);
+    return dataList;
+  }
+
+  Future<List<Map>> filterPaymentMethod({
+    required paymentmethod,
+  }) async {
+    database = await checkDB();
+    String query =
+        "SELECT * FROM incomeexpense WHERE Ptype = '$paymentmethod'";
+    List<Map> dataList = await database!.rawQuery(query);
+    return dataList;
+  }
+  Future<List<Map>> filterIncomeExpense({
+    required status,
+  }) async {
+    database = await checkDB();
+    String query = "SELECT * FROM incomeexpense WHERE status = '$status'";
+    List<Map> dataList = await database!.rawQuery(query);
+    return dataList;
+  }
 
 }
+
+
+
+

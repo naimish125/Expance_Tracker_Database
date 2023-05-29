@@ -9,6 +9,7 @@ class AddControllor extends GetxController {
   TextEditingController PName = TextEditingController();
   TextEditingController Pprice = TextEditingController();
   TextEditingController Ptype = TextEditingController();
+  TextEditingController Pnote = TextEditingController();
   TextEditingController Pdate = TextEditingController(
       text:
           "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}");
@@ -26,6 +27,35 @@ class AddControllor extends GetxController {
   RxInt income = 0.obs;
   RxInt expense = 0.obs;
   RxInt Status = 0.obs;
+  RxString date = "".obs;
+  DateTime now = DateTime.now();
+  Rx<DateTime>? filterStartingDateFind = DateTime.now().obs;
+  Rx<DateTime>? resetFilterStartingDateFind = DateTime.now().obs;
+  Rx<DateTime>? filterEndingDateFind = DateTime.now().obs;
+  Rx<DateTime>? resetFilterEndingDateFind = DateTime.now().obs;
+  var selectedCategory = "Food".obs;
+  var resetSelectedCategory = "Food".obs;
+
+  void resetCategory() {
+    selectedCategory.value = resetSelectedCategory.value;
+  }
+  RxInt udIndex = 0.obs;
+
+  var selectedPaymentMethod = "Offline".obs;
+
+  var resetSelectedPaymentMethod = "Offline".obs;
+
+  void resetPaymentMethod() {
+    selectedPaymentMethod.value = resetSelectedPaymentMethod.value;
+  }
+  RxList<String> ChangePaymentList =  <String>[
+    'Offline',
+    'Online',
+  ].obs;
+
+  void changeUDIndex(value) {
+    udIndex.value = value;
+  }
 
   Future<void> ReadData() async {
     dbHelper dbhelper = dbHelper();
@@ -77,7 +107,7 @@ class AddControllor extends GetxController {
     Icon(Icons.movie_filter, color: Colors.white, size: 22),
   ].obs;
 
-  RxList categoryNameList = [
+  RxList<String> categoryNameList = <String>[
     'Food',
     'Game',
     'Travel',
@@ -126,4 +156,49 @@ class AddControllor extends GetxController {
     DataTotal.value = incomeDataTotal[0]['total_income'] -
         expenseDataTotal[0]['total_expense'];
   }
+  void filterIncomeExpense({
+    required status,
+  }) async {
+    dbHelper dbhelper = dbHelper();
+    ProductList.value = await dbhelper.filterIncomeExpense(
+      status: status,
+    );
+  }
+
+  void filterDate({
+    startingDate,
+    endingDate,
+  }) async {
+    dbHelper dbhelper = dbHelper();
+    ProductList.value = await dbhelper.filterDate(
+      startingDate: startingDate,
+      endingDate: endingDate,
+    );
+  }
+
+  void filterCategory(
+      String category,
+      ) async {
+    dbHelper dbhelper = dbHelper();
+    ProductList.value = await dbhelper.filterCategory(
+      category: category,
+    );
+  }
+
+  void filterPaymentMethod(
+      String paymentmethod,
+      ) async {
+    dbHelper dbhelper = dbHelper();
+    ProductList.value = await dbhelper.filterPaymentMethod(
+      paymentmethod: paymentmethod,
+    );
+  }
+
+  void resetFilterStartingDate() {
+    filterStartingDateFind = resetFilterStartingDateFind;
+  }
+  void resetFilterEndingDate() {
+    filterEndingDateFind = resetFilterEndingDateFind;
+  }
 }
+
